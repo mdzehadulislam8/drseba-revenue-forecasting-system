@@ -233,6 +233,43 @@ legend {
     transform: translateY(-1px);
 }
 
+/* Radio Button Group */
+.radio-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--ink-700);
+    padding: 10px 14px;
+    border: 1px solid #dbe3ef;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.radio-label:hover {
+    border-color: var(--accent-1);
+    background-color: rgba(14, 165, 164, 0.05);
+}
+
+.radio-label input[type="radio"] {
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--accent-1);
+}
+
+.radio-label input[type="radio"]:checked + span,
+.radio-label input[type="radio"]:checked ~ * {
+    color: var(--accent-1);
+}
+
 /* ============================================
    Buttons
    ============================================ */

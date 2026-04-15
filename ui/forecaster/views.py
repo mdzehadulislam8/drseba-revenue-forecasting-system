@@ -90,11 +90,12 @@ def index(request):
                 'avg_fee': float(request.POST.get('avg_fee', 0)),
                 'commission_rate': float(request.POST.get('commission_rate', 0)) / 100,
                 'service_charge': float(request.POST.get('service_charge', 0)),
-                'experience_years': int(request.POST.get('experience_years', 0)),
-                'rating_avg': float(request.POST.get('rating_avg', 0)),
+                'experience_years': 12,  # Default value
+                'rating_avg': 4.7,  # Default value
                 'district': request.POST.get('district', 'Dhaka'),
                 'specialization_group': request.POST.get('specialization_group', 'General Physician'),
                 'hospital_type': request.POST.get('hospital_type', 'Private Hospital'),
+                'service_mode': request.POST.get('service_mode', 'Online'),
                 'lag_1': float(request.POST.get('lag_1', 0)),
                 'lag_7': float(request.POST.get('lag_7', 0)),
                 'rolling_mean_7': float(request.POST.get('rolling_mean_7', 0)),

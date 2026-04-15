@@ -365,18 +365,10 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 ---
 
-## License
-
-This project is the property of Dr. Seba and the development team. Unauthorized distribution or reuse is not permitted.
-
----
-
 ## Contact
 
 For implementation support, model questions, or deployment guidance, contact the development team responsible for the Dr. Seba forecasting platform.
 
 ---
-
-**Project status:** Production ready
 
 **Last updated:** April 15, 2026
