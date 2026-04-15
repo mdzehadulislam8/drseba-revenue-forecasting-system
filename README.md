@@ -1,361 +1,104 @@
-# Dr. Seba Commission Revenue Forecasting System
+# Dr. Seba Revenue Forecasting System
 
-> **Enterprise-Grade AI-Powered Revenue Prediction Platform for Healthcare Professionals**
+> Production-oriented revenue forecasting platform for healthcare professionals, built with FastAPI, Django, and a CatBoost regression model.
 
-[![Python Version](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-green?style=flat-square)](https://fastapi.tiangolo.com/)
-[![Django](https://img.shields.io/badge/Django-4.0%2B-darkgreen?style=flat-square)](https://www.djangoproject.com/)
-[![Machine Learning](https://img.shields.io/badge/ML-CatBoost-orange?style=flat-square)](https://catboost.ai/)
-[![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=flat-square)](https://github.com)
-
----
-
-## 📌 Executive Summary
-
-Dr. Seba Commission Revenue Forecasting System is a sophisticated machine learning-powered platform designed to predict healthcare professionals' commission revenue with high accuracy. The system analyzes booking patterns, professional demographics, specializations, and historical performance metrics to generate accurate single-day predictions and multi-day forecasts spanning up to 365 days.
-
-**Key Business Value:**
-- 📊 **Predictive Accuracy:** CatBoost ML model trained on historical healthcare commission data
-- ⏱️ **Real-time Processing:** Sub-100ms API response times for instant predictions
-- 💼 **Professional Grade:** Enterprise-level architecture with FastAPI + Django integration
-- 📈 **Scalable Analytics:** Support for 8 districts, 10 specializations, multiple hospital types
-- 🔒 **Data Security:** SQLite with configurable authentication framework
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat-square)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-009688?style=flat-square)](https://fastapi.tiangolo.com/)
+[![Django](https://img.shields.io/badge/Django-4.x-0C4B33?style=flat-square)](https://www.djangoproject.com/)
+[![CatBoost](https://img.shields.io/badge/ML-CatBoost-orange?style=flat-square)](https://catboost.ai/)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=flat-square)](https://github.com/mdzehadulislam8/drseba-revenue-forecasting-system)
 
 ---
 
-## 🏗️ System Architecture
+## Overview
 
-### High-Level Overview
+Dr. Seba Revenue Forecasting System predicts commission revenue for healthcare professionals using booking volume, pricing, service charge, experience, ratings, district, specialization, hospital type, and recent historical trends. The system supports both single-day predictions and multi-day forecasts through a simple Django web interface and a FastAPI backend.
 
+The application is split into two services:
+
+- `api/` provides the FastAPI prediction service on port `8000`.
+- `ui/` provides the Django user interface on port `8001`.
+
+This separation keeps the prediction logic independent from the presentation layer and makes the system easier to test, debug, and deploy.
+
+---
+
+## Key Features
+
+- Single-day revenue prediction from a structured input form.
+- Multi-day forecasting with daily, weekly, and monthly summaries.
+- FastAPI backend with validation, Swagger docs, and JSON responses.
+- Django frontend for interactive input and result rendering.
+- CatBoost-based regression model for numerical forecasting.
+- Responsive dashboard-style UI.
+- SQLite-backed application state for local development.
+- Windows helper scripts for startup and shutdown.
+
+---
+
+## Input and Output Preview
+
+The screenshot below shows the relationship between the input form and the generated output panel.
+
+<p align="center">
+  <a href="https://drive.google.com/file/d/1Ao9-6y_8CuRetGJntJwaB4-0sSJxutZS/view?usp=drive_link" target="_blank" rel="noreferrer">
+    <img src="https://drive.google.com/uc?export=view&id=1Ao9-6y_8CuRetGJntJwaB4-0sSJxutZS" alt="Input and output preview" width="1000" />
+  </a>
+</p>
+
+<p align="center">
+  <strong>Input form on the left, prediction output on the right.</strong>
+</p>
+
+If the image does not render directly in your preview, use the Drive link above. The section is included to visually connect the form inputs with the forecast outputs shown to the user.
+
+---
+
+## Architecture
+
+```text
+User
+  -> Django UI (Port 8001)
+      -> FastAPI Backend (Port 8000)
+          -> Pydantic Validation
+          -> CatBoost Model Inference
+          -> JSON Response
+      -> Rendered Forecast Results
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     CLIENT APPLICATION LAYER                     │
-│                   (Django Web Interface - Port 8001)              │
-├─────────────────────────────────────────────────────────────────┤
-│          User Input Form  →  Data Validation  →  API Call        │
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-                     ↓  HTTP/JSON
-┌─────────────────────────────────────────────────────────────────┐
-│                    API SERVICE LAYER                             │
-│              (FastAPI Backend - Port 8000)                       │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │  Request Validation (Pydantic Models)                    │   │
-│  │  Business Logic Processing                               │   │
-│  │  ML Model Inference                                       │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-                     ↓
-┌─────────────────────────────────────────────────────────────────┐
-│                  MACHINE LEARNING LAYER                          │
-│           (CatBoost Regression Model)                            │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │  Feature Engineering                                     │   │
-│  │  Model Inference (12 Features → Revenue Prediction)      │   │
-│  │  Output Formatting & Validation                          │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└────────────────────┬────────────────────────────────────────────┘
-                     │
-                     ↓  JSON Response
-┌─────────────────────────────────────────────────────────────────┐
-│                  CLIENT DISPLAY LAYER                            │
-│          (Django Templates + Bootstrap 5 UI)                    │
-│         ✓ Prediction Results  ✓ Statistical Analysis             │
-│         ✓ Weekly/Monthly Summaries  ✓ Charts & Metrics           │
-└─────────────────────────────────────────────────────────────────┘
-```
 
-### Component Breakdown
+### Layers
 
-#### 1. **Frontend Application (Django)**
-- **Location:** `ui/`
-- **Framework:** Django 4.0+
-- **Port:** 8001
-- **Features:**
-  - Multi-step form validation
-  - Real-time API integration
-  - Bootstrap 5 responsive UI
-  - Client-side data caching
-  - Error handling & user feedback
-
-#### 2. **Backend API (FastAPI)**
-- **Location:** `api/`
-- **Framework:** FastAPI 0.104+
-- **Port:** 8000
-- **Features:**
-  - RESTful API endpoints
-  - Pydantic request/response validation
-  - Automatic OpenAPI documentation (Swagger UI)
-  - Uvicorn ASGI server
-  - Structured error responses
-
-#### 3. **Machine Learning Pipeline**
-- **Location:** `models/`
-- **Algorithm:** CatBoost Gradient Boosting
-- **Input Features:** 12 professional & historical metrics
-- **Output:** Revenue prediction (BDT)
-- **Training Data:** Historical commission transactions
-
-#### 4. **Data Layer**
-- **Database:** SQLite (db.sqlite3)
-- **ORM:** Django ORM
-- **Data Models:** Professional records, predictions, audit logs
+| Layer | Responsibility |
+|-------|----------------|
+| UI Layer | Collects user input and renders prediction output |
+| API Layer | Validates requests and serves prediction endpoints |
+| ML Layer | Runs the trained CatBoost model |
+| Data Layer | Stores Django application state in SQLite |
 
 ---
 
-## 📊 System Input/Output Flow
+## Input Data Contract
 
-### Input Data Model (POST /predict & /forecast)
+The API accepts the following core fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `total_bookings` | integer | Total appointments in the selected period |
+| `avg_fee` | float | Average consultation fee |
+| `commission_rate` | float | Commission percentage as a decimal |
+| `service_charge` | float | Additional per-service charge |
+| `experience_years` | integer | Years of professional experience |
+| `rating_avg` | float | Average user or patient rating |
+| `district` | string | Operating district |
+| `specialization_group` | string | Medical specialization group |
+| `hospital_type` | string | Institution type |
+| `lag_1` | float | Previous day revenue |
+| `lag_7` | float | Revenue from seven days ago |
+| `rolling_mean_7` | float | Seven-day rolling mean |
+
+Example request payload:
 
 ```json
-{
-  "total_bookings": 180,              // Integer: Total appointments this period
-  "avg_fee": 700.0,                   // Float: Average consultation fee (BDT)
-  "commission_rate": 0.12,            // Float: Commission percentage (0-1)
-  "service_charge": 60.0,             // Float: Per-appointment service fee (BDT)
-  "experience_years": 12,             // Integer: Years in profession
-  "rating_avg": 4.7,                  // Float: Average customer rating (0-5)
-  "district": "Dhaka",                // String: Operating district
-  "specialization_group": "General Physician",  // String: Medical specialization
-  "hospital_type": "Private Hospital", // String: Type of institution
-  "lag_1": 9500.0,                    // Float: Previous day revenue (BDT)
-  "lag_7": 8800.0,                    // Float: 7-day lagged revenue (BDT)
-  "rolling_mean_7": 9000.0            // Float: 7-day moving average (BDT)
-}
-```
-
-### Feature Descriptions
-
-| Feature | Type | Range | Purpose | Example |
-|---------|------|-------|---------|---------|
-| total_bookings | Integer | 0-500+ | Volume indicator | 180 |
-| avg_fee | Float | 200-3000 | Average service cost | 700 |
-| commission_rate | Float | 0-1 | Percentage commission | 0.12 (12%) |
-| service_charge | Float | 0-200 | Per-booking fee | 60 |
-| experience_years | Integer | 0-50+ | Professional tenure | 12 |
-| rating_avg | Float | 0-5 | Customer satisfaction | 4.7 |
-| district | String | 8 values | Geographic location | Dhaka |
-| specialization | String | 10 values | Medical specialty | General Physician |
-| hospital_type | String | 4 values | Institution type | Private Hospital |
-| lag_1 | Float | Varies | T-1 revenue | 9500 |
-| lag_7 | Float | Varies | T-7 revenue | 8800 |
-| rolling_mean_7 | Float | Varies | 7-day average | 9000 |
-
-### Output Data Model
-
-#### Single Prediction (POST /predict)
-
-```json
-{
-  "prediction": 23429.77,
-  "currency": "BDT",
-  "message": "Single day prediction successful",
-  "confidence": "high"
-}
-```
-
-#### Multi-Day Forecast (POST /forecast?days=30)
-
-```json
-{
-  "daily_forecast": [
-    23429.77, 23674.21, 23469.89, 23468.62, 
-    23468.62, 23475.87, 23541.97, ...
-  ],
-  "weekly_total": 164528.94,
-  "monthly_total": 713311.11,
-  "total_days": 30,
-  "daily_statistics": {
-    "min": 23429.77,
-    "max": 23960.16,
-    "mean": 23777.04,
-    "std_dev": 184.32
-  },
-  "weekly_breakdown": [
-    164528.94,  // Week 1
-    166169.26,  // Week 2
-    167481.46,  // Week 3
-    167323.66,  // Week 4
-    47807.80    // Week 5 (partial)
-  ],
-  "currency": "BDT",
-  "message": "Forecast for 30 days completed successfully"
-}
-```
-
----
-
-## 📁 Project Directory Structure
-
-```
-dr-seba-commission-forecasting/
-│
-├── 📦 api/                                    # FastAPI Backend
-│   ├── main.py                               # FastAPI application with endpoints
-│   ├── models.py                             # Pydantic request/response schemas
-│   ├── config.py                             # Configuration constants
-│   ├── requirements.txt                      # Python dependencies
-│   └── __init__.py
-│
-├── 🎨 ui/                                     # Django Frontend
-│   ├── manage.py                             # Django management script
-│   ├── db.sqlite3                            # SQLite database
-│   ├── requirements.txt                      # Django dependencies
-│   │
-│   ├── forecaster/                           # Main Django application
-│   │   ├── views.py                          # View logic & API integration
-│   │   ├── urls.py                           # URL routing
-│   │   ├── models.py                         # Django database models
-│   │   ├── apps.py                           # App configuration
-│   │   ├── admin.py                          # Django admin interface
-│   │   ├── __init__.py
-│   │   │
-│   │   ├── migrations/                       # Database migration history
-│   │   │   ├── 0001_initial.py
-│   │   │   └── __init__.py
-│   │   │
-│   │   ├── templatetags/                     # Custom template filters
-│   │   │   ├── custom_filters.py
-│   │   │   └── __init__.py
-│   │   │
-│   │   └── tests/                            # Unit tests
-│   │
-│   ├── forecasting_ui/                       # Django project settings
-│   │   ├── settings.py                       # Project configuration
-│   │   ├── urls.py                           # Project-level routing
-│   │   ├── wsgi.py                           # WSGI application
-│   │   └── __init__.py
-│   │
-│   ├── static/                               # Static files (CSS, JS)
-│   │   └── css/
-│   │       └── style.css                     # Custom styling
-│   │
-│   └── templates/                            # HTML templates
-│       └── forecaster/
-│           └── index.html                    # Main form & results UI
-│
-├── 🤖 models/                                 # Pre-trained ML Models
-│   └── commission_revenue_forecasting_model.pkl  # CatBoost model (serialized)
-│
-├── 📊 data/                                   # Training & test datasets
-│   ├── training_data.csv
-│   ├── test_data.csv
-│   └── sample_predictions.json
-│
-├── 🧪 tests/                                  # Unit tests & test fixtures
-│   ├── test_model.py                         # ML model tests
-│   ├── test_api.py                           # API endpoint tests
-│   ├── test_ui.py                            # UI integration tests
-│   └── __init__.py
-│
-├── 📄 Configuration & Documentation
-│   ├── README.md                             # This file
-│   ├── .gitignore                            # Git exclusion rules
-│   ├── CONTRIBUTING.md                       # Contribution guidelines
-│   ├── LICENSE                               # Proprietary license
-│   └── CHANGELOG.md                          # Version history
-│
-├── 🚀 Automation Scripts
-│   ├── RUN_TEAM_ACCESS.ps1                   # PowerShell startup script
-│   ├── RUN_TEAM_ACCESS.bat                   # Command prompt startup
-│   ├── STOP_SERVERS.ps1                      # PowerShell shutdown script
-│   └── STOP_SERVERS.bat                      # Command prompt shutdown
-│
-└── .venv/                                     # Python virtual environment
-    └── [excluded from version control]
-```
-
----
-
-## 🚀 Quick Start Guide
-
-### Prerequisites
-
-```bash
-✓ Python 3.8 or higher
-✓ pip (Python package manager)
-✓ Git version control
-✓ 500MB free disk space
-✓ Windows/MacOS/Linux operating system
-```
-
-### Step 1: Clone Repository
-
-```bash
-git clone https://github.com/yourusername/dr-seba-commission-forecasting.git
-cd dr-seba-commission-forecasting
-```
-
-### Step 2: Create Virtual Environment
-
-```bash
-# Windows
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-
-# macOS / Linux
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-### Step 3: Install Dependencies
-
-```bash
-# Install API packages
-cd api
-pip install -r requirements.txt
-cd ..
-
-# Install Frontend packages
-cd ui
-pip install -r requirements.txt
-cd ..
-```
-
-### Step 4: Start Services
-
-**Terminal 1 - API Server:**
-```bash
-cd api
-python main.py
-```
-Expected output:
-```
-INFO:     ✓ Model loaded successfully
-INFO:     Started server process [XXXX]
-INFO:     Uvicorn running on http://0.0.0.0:8000
-```
-
-**Terminal 2 - Django Web Server:**
-```bash
-cd ui
-python manage.py runserver 8001 --noreload
-```
-Expected output:
-```
-Django development server is running at http://127.0.0.1:8001
-```
-
-### Step 5: Access Application
-
-- **Web Interface:** http://localhost:8001
-- **API Documentation:** http://localhost:8000/docs
-- **Health Check:** http://localhost:8000/health
-
----
-
-## 📚 API Reference
-
-### Endpoint 1: Single-Day Prediction
-
-**Request:**
-```http
-POST /predict HTTP/1.1
-Host: localhost:8000
-Content-Type: application/json
-
 {
   "total_bookings": 180,
   "avg_fee": 700,
@@ -372,351 +115,11 @@ Content-Type: application/json
 }
 ```
 
-**Response (200 OK):**
-```json
-{
-  "prediction": 23429.77,
-  "currency": "BDT",
-  "message": "Single day prediction successful"
-}
-```
-
-### Endpoint 2: Multi-Day Forecast
-
-**Request:**
-```http
-POST /forecast?days=30 HTTP/1.1
-Host: localhost:8000
-Content-Type: application/json
-
-[Same payload as /predict]
-```
-
-**Response (200 OK):**
-```json
-{
-  "daily_forecast": [23429.77, 23674.21, ...],
-  "weekly_total": 164528.94,
-  "monthly_total": 713311.11,
-  "total_days": 30,
-  "daily_statistics": {
-    "min": 23429.77,
-    "max": 23960.16,
-    "mean": 23777.04,
-    "std_dev": 184.32
-  },
-  "weekly_breakdown": [164528.94, 166169.26, ...],
-  "currency": "BDT",
-  "message": "Forecast for 30 days completed successfully"
-}
-```
-
-### Endpoint 3: Health Check
-
-**Request:**
-```http
-GET /health HTTP/1.1
-Host: localhost:8000
-```
-
-**Response (200 OK):**
-```json
-{
-  "status": "healthy",
-  "model_loaded": true,
-  "service": "Commission Revenue Forecasting API"
-}
-```
-
-### Endpoint 4: API Documentation
-
-- **Swagger UI:** GET http://localhost:8000/docs
-- **ReDoc:** GET http://localhost:8000/redoc
-
 ---
 
-## 🛠️ Technology Stack
+## Output Format
 
-### Backend
-
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| FastAPI | 0.104+ | Modern web framework |
-| Uvicorn | 0.24+ | ASGI application server |
-| Pydantic | 2.0+ | Data validation |
-| CatBoost | 1.1+ | Machine learning model |
-| NumPy | 1.23+ | Numerical computation |
-| Pandas | 1.5+ | Data preprocessing |
-
-### Frontend
-
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| Django | 4.0+ | Web framework |
-| SQLite | Latest | Database |
-| Bootstrap | 5.x | UI framework |
-| Python-requests | 2.31+ | HTTP client |
-
-### Development
-
-| Tool | Version | Purpose |
-|------|---------|---------|
-| Python | 3.8+ | Programming language |
-| pip | Latest | Package manager |
-| Git | 2.30+ | Version control |
-| PostgreSQL | Optional | Production database |
-
----
-
-## 💼 Deployment Guide
-
-### Production Checklist
-
-- [ ] Update `DEBUG = False` in Django settings
-- [ ] Configure environment variables
-- [ ] Set secure database credentials
-- [ ] Configure CORS settings
-- [ ] Enable HTTPS/SSL
-- [ ] Setup logging and monitoring
-- [ ] Configure load balancer
-- [ ] Setup backup strategy
-
-### Docker Deployment (Optional)
-
-```dockerfile
-# Dockerfile
-FROM python:3.10-slim
-
-WORKDIR /app
-COPY . .
-
-RUN pip install -r requirements.txt
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0"]
-```
-
-### Kubernetes Deployment (Optional)
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: dr-seba-api
-spec:
-  replicas: 3
-  template:
-    spec:
-      containers:
-      - name: api
-        image: dr-seba:latest
-        ports:
-        - containerPort: 8000
-```
-
----
-
-## 🔐 Security Considerations
-
-1. **Input Validation:** All inputs validated via Pydantic models
-2. **API Authentication:** Implement JWT tokens for production
-3. **Rate Limiting:** Add rate limits to prevent abuse
-4. **CORS Configuration:** Restrict cross-origin requests
-5. **Database Encryption:** Use encrypted connections
-6. **Secrets Management:** Store credentials in environment variables
-7. **HTTPS:** Enforce SSL/TLS in production
-
----
-
-## 🐛 Troubleshooting
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| "Cannot connect to API" | API server not running | Start API: `python main.py` |
-| Port 8000 in use | Another application using port | Kill process: `netstat -ano \| findstr :8000` |
-| Model load error | .pkl file missing or corrupted | Verify `models/` folder exists |
-| Import error | Dependencies not installed | Run `pip install -r requirements.txt` |
-| Database locked | Multiple processes accessing DB | Restart Django server |
-| Slow predictions | Large forecast range | Reduce days parameter |
-
----
-
-## 📧 Support & Contact
-
-| Role | Name | Email | Responsibility |
-|------|------|-------|-----------------|
-| Mentor | Nusrat Jahan | nusratadiba88@gmail.com | Technical guidance, code review |
-| Client | Dr. Seba | - | Requirements, feedback |
-| Developer | Development Team | - | Implementation, maintenance |
-
----
-
-## 📈 Performance Metrics
-
-```
-API Response Time:        < 100ms (p95)
-Model Inference Time:     < 50ms
-Database Query Time:      < 20ms
-Memory Usage:             ~150MB
-Supported Concurrency:    100+ simultaneous requests
-Uptime Target:            99.5%
-Forecast Accuracy:        R² > 0.85
-```
-
----
-
-## 📋 Development Checklist
-
-- [x] FastAPI backend implementation
-- [x] Django frontend implementation
-- [x] CatBoost model integration
-- [x] API-UI integration
-- [x] Database schema setup
-- [x] Input validation framework
-- [x] Error handling system
-- [x] GitHub repository
-- [x] Professional documentation
-- [ ] Comprehensive unit tests (Coverage: 50%+)
-- [ ] Integration tests
-- [ ] Performance testing
-- [ ] Security audit
-- [ ] Docker containerization
-- [ ] CI/CD pipeline (GitHub Actions)
-- [ ] Load testing
-- [ ] Production deployment
-
----
-
-## 📄 License & Legal
-
-This project is the proprietary property of **Dr. Seba Client**. Unauthorized copying, modification, distribution, or use is strictly prohibited.
-
-```
-PROPRIETARY LICENSE
-© 2026 Dr. Seba Commission Revenue Forecasting System
-All rights reserved.
-```
-
----
-
----
-
-## 📊 Input/Output Flow Visualization
-
-### Complete Data Flow Pipeline
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                      USER INTERFACE (Django)                     │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │   Professional Information Form                            │  │
-│  │   • Professional Details (Name, License, Experience)       │  │
-│  │   • Service Parameters (Booking count, Fee structure)      │  │
-│  │   • Rating & Performance (Customer rating, specialization) │  │
-│  │   • Location & Institution (District, hospital type)       │  │
-│  │   • Historical Data (Previous day/week revenue)            │  │
-│  │                                                             │  │
-│  │   ╔════════════════════════════════════════════════════╗   │  │
-│  │   ║ [SUBMIT] → Validation → JSON Serialization          ║   │  │
-│  │   ╚════════════════════════════════════════════════════╝   │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└────────────┬─────────────────────────────────────────────────────┘
-             │ HTTP POST
-             │ (application/json)
-             ↓
-┌──────────────────────────────────────────────────────────────────┐
-│                   API GATEWAY (FastAPI)                          │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  Input Validation Layer (Pydantic)                         │  │
-│  │  • Type checking                                           │  │
-│  │  • Range validation                                        │  │
-│  │  • Required field verification                            │  │
-│  │  • Error response generation                              │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└────────────┬─────────────────────────────────────────────────────┘
-             │ Valid JSON
-             │ (12 features)
-             ↓
-┌──────────────────────────────────────────────────────────────────┐
-│             MACHINE LEARNING ENGINE (CatBoost)                   │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  Feature Processing                                        │  │
-│  │  ├─ Numerical Feature Normalization                        │  │
-│  │  ├─ Categorical Encoding (District, Specialization, etc.) │  │
-│  │  ├─ Lag Feature Integration                               │  │
-│  │  └─ Moving Average Calculation                            │  │
-│  ├────────────────────────────────────────────────────────────┤  │
-│  │  Model Inference (CatBoost Regression)                     │  │
-│  │  ├─ Single Prediction: Point forecast (1 day)            │  │
-│  │  └─ Multi-Forecast: Sequential prediction (365 days)      │  │
-│  ├────────────────────────────────────────────────────────────┤  │
-│  │  Output Generation                                         │  │
-│  │  ├─ Revenue prediction (BDT)                              │  │
-│  │  ├─ Confidence score                                       │  │
-│  │  ├─ Daily breakdown (for multi-day)                        │  │
-│  │  └─ Statistical summaries (min/max/mean/std-dev)          │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└────────────┬─────────────────────────────────────────────────────┘
-             │ JSON Response
-             │ (predictions)
-             ↓
-┌──────────────────────────────────────────────────────────────────┐
-│                   RESPONSE FORMATTER (FastAPI)                   │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  JSON Structure Assembly                                   │  │
-│  │  • Prediction values                                       │  │
-│  │  • Currency specification (BDT)                            │  │
-│  │  • Success messages                                        │  │
-│  │  • Confidence levels                                       │  │
-│  │  • Weekly/Monthly aggregates (if applicable)              │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└────────────┬─────────────────────────────────────────────────────┘
-             │ HTTP 200 OK
-             │ (JSON response)
-             ↓
-┌──────────────────────────────────────────────────────────────────┐
-│                   FRONTEND DISPLAY (Django)                      │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  Results Section                                           │  │
-│  │  ┌─────────────────────────────────────────────────────┐   │  │
-│  │  │ Prediction Card              │ Weekly Breakdown    │   │  │
-│  │  │ ✓ Revenue: 23,429.77 BDT    │ Week 1: 164,528 BDT│   │  │
-│  │  │ ✓ Confidence: High           │ Week 2: 166,169 BDT│   │  │
-│  │  │ ✓ Status: Success            │ Week 3: 167,481 BDT│   │  │
-│  │  │                              │ Week 4: 167,323 BDT│   │  │
-│  │  └─────────────────────────────────────────────────────┘   │  │
-│  │                                                             │  │
-│  │  Statistics Grid (Multi-day forecast)                      │  │
-│  │  Min: 23,429 | Max: 23,960 | Mean: 23,777 | StdDev: 184  │  │
-│  │                                                             │  │
-│  │  Daily Forecast Chart (if applicable)                      │  │
-│  │  Graph visualization of daily predictions                 │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-### Input Data (Request Body)
-
-The system accepts the following 12 input parameters:
-
-```json
-{
-  "total_bookings": 180,
-  "avg_fee": 700.0,
-  "commission_rate": 0.12,
-  "service_charge": 60.0,
-  "experience_years": 12,
-  "rating_avg": 4.7,
-  "district": "Dhaka",
-  "specialization_group": "General Physician",
-  "hospital_type": "Private Hospital",
-  "lag_1": 9500.0,
-  "lag_7": 8800.0,
-  "rolling_mean_7": 9000.0
-}
-```
-
-### Output Data (Response Body)
-
-#### Single Day Prediction
+### Single Prediction
 
 ```json
 {
@@ -727,20 +130,11 @@ The system accepts the following 12 input parameters:
 }
 ```
 
-#### Multi-Day Forecast (30 days)
+### Multi-Day Forecast
 
 ```json
 {
-  "daily_forecast": [
-    23429.77, 23674.21, 23469.89, 23468.62,
-    23468.62, 23475.87, 23541.97, 23689.44,
-    23719.16, 23614.82, 23582.17, 23608.53,
-    23745.39, 23872.61, 23912.18, 23809.24,
-    23740.95, 23689.53, 23621.89, 23542.67,
-    23489.34, 23456.78, 23512.34, 23645.89,
-    23712.56, 23801.23, 23856.45, 23912.78,
-    23945.62, 23960.16
-  ],
+  "daily_forecast": [23429.77, 23674.21, 23469.89],
   "weekly_total": 164528.94,
   "monthly_total": 713311.11,
   "total_days": 30,
@@ -750,13 +144,7 @@ The system accepts the following 12 input parameters:
     "mean": 23777.04,
     "std_dev": 184.32
   },
-  "weekly_breakdown": [
-    164528.94,  // Week 1 Total
-    166169.26,  // Week 2 Total
-    167481.46,  // Week 3 Total
-    167323.66,  // Week 4 Total
-    47807.80    // Week 5 (Partial)
-  ],
+  "weekly_breakdown": [164528.94, 166169.26, 167481.46, 167323.66, 47807.8],
   "currency": "BDT",
   "message": "Forecast for 30 days completed successfully"
 }
@@ -764,96 +152,66 @@ The system accepts the following 12 input parameters:
 
 ---
 
-## 🔄 Version History
+## Project Structure
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0.0 | April 2026 | Initial production release |
-
----
-
-## 📞 Frequently Asked Questions
-
-**Q: Can I use this model for other professions besides healthcare?**
-A: The current model is specifically trained on healthcare commission data. However, you can retrain the model using the data pipeline in the `models/` directory with your own dataset.
-
-**Q: What is the maximum forecast range supported?**
-A: The system supports forecasts up to 365 days. However, accuracy is highest within the first 90 days and decreases gradually for longer predictions.
-
-**Q: Can I modify or retrain the machine learning model?**
-A: Yes, absolutely. The training pipeline is included. You can preprocess new data and retrain the CatBoost model using your own datasets.
-
-**Q: Is this system HIPAA compliant?**
-A: Currently, the system is not HIPAA-compliant out of the box. Additional security measures, encryption, and audit logging would be required for healthcare data compliance.
-
-**Q: Can I deploy this on cloud platforms like AWS or Azure?**
-A: Yes. The application is containerizable with Docker and can be deployed on AWS, Azure, Google Cloud, or any other cloud platform using Kubernetes.
-
-**Q: How accurate are the predictions?**
-A: The model achieves R² > 0.85 on test data. Accuracy depends on data quality, feature completeness, and market conditions.
-
-**Q: What happens if the API is unavailable?**
-A: The Django frontend has built-in error handling. Users will see an informative error message suggesting they check the API status.
-
----
-
-## 🎯 Future Roadmap
-
-### Q2 2026
-- [ ] Mobile application (React Native/Flutter)
-- [ ] Advanced analytics dashboard with charts
-- [ ] Real-time email/SMS notifications
-- [ ] Batch prediction API
-
-### Q3 2026
-- [ ] Multi-language support (Bangla, English, Hindi)
-- [ ] User authentication system with roles
-- [ ] Report export functionality (PDF/Excel/CSV)
-- [ ] Database backup automation
-
-### Q4 2026
-- [ ] Cloud deployment templates
-- [ ] Advanced API rate limiting
-- [ ] Machine learning model optimization
-- [ ] Performance monitoring dashboard
-
----
-
-## 🏆 Key Performance Indicators
-
-| Metric | Target | Current |
-|--------|--------|---------|
-| API Response Time | < 100ms | ~45ms |
-| Model Inference Time | < 50ms | ~30ms |
-| Forecast Accuracy (R²) | > 0.85 | 0.87 |
-| System Uptime | 99.5% | Production Grade |
-| Concurrent Requests | 100+ | Tested to 150+ |
-| Memory Footprint | < 200MB | ~150MB |
-
----
-
-**Project Status:** ✅ **Production Ready**  
-**Last Updated:** April 15, 2026  
-**Maintained by:** Dr. Seba Development Team  
-**Repository:** https://github.com/mdzehadulislam8/drseba-revenue-forecasting-system
-
----
-
-*Built with precision for Dr. Seba Client • Enterprise-Grade Revenue Forecasting Solution*
-- **Python 3.8+**
-- **pip** (Python package manager)
-- **Git**
-- **Windows/macOS/Linux**
-
-### ইনস্টলেশন
-
-#### ১. রিপোজিটরি ক্লোন করুন
-```bash
-git clone https://github.com/yourusername/dr-seba-client.git
-cd dr-seba-client
+```text
+dr-seba-revenue-forecasting-system/
+├── api/
+│   ├── main.py
+│   ├── models.py
+│   ├── config.py
+│   └── requirements.txt
+├── ui/
+│   ├── manage.py
+│   ├── db.sqlite3
+│   ├── requirements.txt
+│   ├── forecaster/
+│   ├── forecasting_ui/
+│   ├── static/
+│   └── templates/
+├── models/
+├── data/
+├── tests/
+├── RUN_TEAM_ACCESS.ps1
+├── RUN_TEAM_ACCESS.bat
+├── STOP_SERVERS.ps1
+├── STOP_SERVERS.bat
+└── README.md
 ```
 
-#### ২. ভার্চুয়াল এনভায়রনমেন্ট তৈরি করুন
+---
+
+## Technology Stack
+
+| Area | Tools |
+|------|-------|
+| Backend API | FastAPI, Uvicorn, Pydantic |
+| Frontend | Django, HTML, CSS |
+| Machine Learning | CatBoost, NumPy, Pandas |
+| Storage | SQLite |
+| HTTP Integration | Requests |
+| Runtime | Python 3.8+ |
+
+---
+
+## Local Setup
+
+### Requirements
+
+- Python 3.8 or later
+- pip
+- Git
+- Windows, macOS, or Linux
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/mdzehadulislam8/drseba-revenue-forecasting-system.git
+cd drseba-revenue-forecasting-system
+```
+
+### 2. Create a virtual environment
+
 ```bash
 # Windows
 python -m venv .venv
@@ -864,14 +222,13 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-#### ३. ডিপেন্ডেন্সি ইনস্টল করুন
+### 3. Install dependencies
+
 ```bash
-# API dependencies
 cd api
 pip install -r requirements.txt
 cd ..
 
-# UI dependencies
 cd ui
 pip install -r requirements.txt
 cd ..
@@ -879,196 +236,147 @@ cd ..
 
 ---
 
-## ▶️ অ্যাপ্লিকেশন চালু করুন
+## Run the Application
 
-### অপশন ১: স্বয়ংক্রিয় (সুপারিশকৃত)
-```bash
-# Windows PowerShell
+### Option 1: Automated startup
+
+```powershell
 .\RUN_TEAM_ACCESS.ps1
+```
 
-# Windows Command Prompt
+```cmd
 RUN_TEAM_ACCESS.bat
 ```
 
-### অপশন ২: ম্যানুয়াল (সব প্ল্যাটফর্ম)
+### Option 2: Manual startup
 
-**টার্মিনাল ১ - API সার্ভার:**
+Start the API server:
+
 ```bash
 cd api
 python main.py
-# API চলবে: http://localhost:8000
 ```
 
-**টার্মিনাল ২ - Django UI:**
+Start the Django UI:
+
 ```bash
 cd ui
 python manage.py runserver 8001 --noreload
-# UI চলবে: http://localhost:8001
 ```
 
-### 📍 অ্যাক্সেস পয়েন্ট
-| সেবা | URL | উদ্দেশ্য |
-|------|-----|---------|
-| 🎨 **ইউজার ইন্টারফেস** | http://localhost:8001 | ফোরকাস্টিং ফর্ম এবং ফলাফল |
-| 📚 **API ডকুমেন্টেশন** | http://localhost:8000/docs | Interactive Swagger UI |
-| 💚 **health চেক** | http://localhost:8000/health | API স্ট্যাটাস ভেরিফিকেশন |
-| 🔧 **ReDoc** | http://localhost:8000/redoc | Alternative API docs |
+### Access points
 
+| Service | URL | Purpose |
+|---------|-----|---------|
+| UI | http://localhost:8001 | Forecasting interface |
+| API docs | http://localhost:8000/docs | Swagger UI |
+| Health check | http://localhost:8000/health | API status |
+| ReDoc | http://localhost:8000/redoc | Alternative API docs |
 
-## � অ্যাপ্লিকেশন থামান
+---
 
-```bash
-# Windows PowerShell
+## Stop the Application
+
+```powershell
 .\STOP_SERVERS.ps1
+```
 
-# Windows Command Prompt
+```cmd
 STOP_SERVERS.bat
-
-# Manual (সব প্ল্যাটফর্ম)
-# প্রতিটি টার্মিনালে Ctrl+C চাপুন
 ```
+
+If you started the services manually, stop them with `Ctrl+C` in each terminal.
 
 ---
 
-## 📊 API এন্ডপয়েন্টগুলি
+## API Endpoints
 
-### 🔍 `/predict` - একদিনের পূর্বাভাস
-```bash
-POST /predict
-```
-**Response:** একদিনের commission revenue পূর্বাভাস
+### `POST /predict`
 
-### 📈 `/forecast?days=30` - মাল্টি-ডে বিশ্লেষণ
-```bash
-POST /forecast?days=30
-```
-**Response:** ৩০ দিনের বিস্তারিত ফোরকাস্ট + পরিসংখ্যান
+Returns a single revenue prediction for the submitted payload.
 
-### ❤️ `/health` - সেবা স্বাস্থ্য
-```bash
-GET /health
-```
-**Response:** API স্ট্যাটাস এবং মডেল তথ্য
+### `POST /forecast?days=30`
+
+Returns a multi-day forecast with daily values and summary statistics.
+
+### `GET /health`
+
+Returns service status and model loading information.
 
 ---
 
-## 🧪 পরীক্ষা চালান
+## Testing
 
 ```bash
 cd tests
 python -m pytest -v
 ```
 
----
+On Windows, use the project interpreter when possible:
 
-## 📚 প্রযুক্তি স্ট্যাক
-
-| উপাদান | প্যাকেজ | সংস্করণ |
-|--------|---------|---------|
-| **Backend Framework** | FastAPI | 0.104+ |
-| **Web Server** | Uvicorn | 0.24+ |
-| **Frontend Framework** | Django | 4.0+ |
-| **Machine Learning** | CatBoost | 1.1+ |
-| **Data Processing** | Pandas | 1.5+ |
-| **Numerical Computing** | NumPy | 1.23+ |
-| **Data Validation** | Pydantic | 2.0+ |
-| **Database** | SQLite | Cross-platform |
-| **HTTP Client** | Requests | 2.31+ |
+```powershell
+.\.venv\Scripts\python.exe -m pytest -v
+```
 
 ---
 
-## 📝 পরিবেশ পরিবর্তনশীল
+## Environment Variables
 
-Optional `.env` ফাইল:
+Optional `.env` file:
+
 ```env
 DEBUG=True
-DJANGO_SECRET_KEY=your-secret-key-here
+DJANGO_SECRET_KEY=replace-me
 API_BASE_URL=http://localhost:8000
 ALLOWED_HOSTS=localhost,127.0.0.1
 ```
 
 ---
 
-## 🐛 সাধারণ সমস্যা এবং সমাধান
+## Troubleshooting
 
-| সমস্যা | কারণ | সমাধান |
-|--------|------|--------|
-| Cannot connect to API | API সার্ভার চলছে না | `python main.py` কমান্ড চালান |
-| Port 8000 already in use | অন্য অ্যাপ্লিকেশন ব্যবহার করছে | `netstat -ano \| findstr :8000` দিয়ে চেক করুন |
-| Port 8001 already in use | অন্য Django চলছে | ভিন্ন পোর্ট ব্যবহার করুন: `python manage.py runserver 8002` |
-| Module not found | ডিপেন্ডেন্সি সঠিক নয় | `pip install -r requirements.txt --force-reinstall` চালান |
-| Model load failed | মডেল ফাইল গায়েব | `models/` ফোল্ডার যাচাই করুন |
-
----
-
-## 📧 যোগাযোগ এবং সহায়তা
-
-| ভূমিকা | নাম | যোগাযোগ |
-|--------|-----|---------|
-| 👨‍🏫 **Mentor** | Nusrat Jahan | 📧 nusratadiba88@gmail.com |
-| 🏢 **Client** | Dr. Seba | - |
-
-> যেকোনো সমস্যা বা প্রশ্নের জন্য mentor এর সাথে যোগাযোগ করুন
+| Issue | Likely Cause | Fix |
+|-------|--------------|-----|
+| Cannot connect to API | API server is not running | Start `api/main.py` |
+| Port 8000 already in use | Another service is using the port | Stop the conflicting process |
+| Port 8001 already in use | Another Django instance is active | Use a different port |
+| Module not found | Dependencies are missing | Run `pip install -r requirements.txt` |
+| Model load failed | Model file is missing or corrupted | Verify the `models/` folder |
 
 ---
 
-## 📋 ডেভেলপমেন্ট চেকলিস্ট
+## Security Notes
 
-- [x] FastAPI Backend ডেভেলপমেন্ট
-- [x] Django Frontend তৈরি
-- [x] CatBoost ML মডেল ইন্টিগ্রেশন
-- [x] API-UI সংযোগ
-- [x] ডাটাবেস সেটআপ (SQLite)
-- [x] GitHub রিপোজিটরি তৈরি
-- [x] Professional Documentation
-- [ ] Comprehensive Unit Tests
-- [ ] Docker Containerization
-- [ ] CI/CD Pipeline (GitHub Actions)
-- [ ] Deployment to Production
+- Validate all input through Pydantic models.
+- Keep secrets in environment variables.
+- Restrict allowed hosts and CORS settings in production.
+- Add authentication and rate limiting before public deployment.
+- Use HTTPS in any non-local environment.
 
 ---
 
-## 📊 প্রজেক্ট পরিসংখ্যান
+## Roadmap
 
-```
-Total Files:              30+
-Lines of Code:            2000+
-API Endpoints:            3
-Database Models:          2
-Trained ML Models:        1
-Test Coverage:            50%+
-Supported Districts:      8
-Specializations:          10
-Max Forecast Days:        365
-```
+- Add authenticated user access.
+- Improve analytics and reporting views.
+- Add export support for PDF and Excel.
+- Introduce Docker and CI/CD workflows.
+- Expand model monitoring and evaluation.
 
 ---
 
-## 📄 লাইসেন্স
+## License
 
-এই প্রজেক্টটি **Dr. Seba Client** এর জন্য মালিকানাধীন এবং গোপনীয়।  
-অননুমোদিত কপি, পরিবর্তন বা বিতরণ সম্পূর্ণভাবে নিষিদ্ধ।
-
----
-
-## 🎯 ভবিষ্যৎ রোডম্যাপ
-
-- [ ] Mobile app (React Native)
-- [ ] Advanced analytics dashboard
-- [ ] Real-time notifications
-- [ ] Multi-language support
-- [ ] Cloud deployment (AWS/Azure)
-- [ ] API rate limiting
-- [ ] User authentication system
-- [ ] Export reports (PDF/Excel)
+This project is the property of Dr. Seba and the development team. Unauthorized distribution or reuse is not permitted.
 
 ---
 
-**Project Status:** ✅ Active Development  
-**Last Updated:** এপ্রিল ২০২৬  
-**Maintained by:** Dr. Seba Development Team  
-**GitHub:** https://github.com/yourusername/dr-seba-client
+## Contact
+
+For implementation support, model questions, or deployment guidance, contact the development team responsible for the Dr. Seba forecasting platform.
 
 ---
 
-*Built with ❤️ for Dr. Seba Client*
+**Project status:** Production ready
+
+**Last updated:** April 15, 2026
